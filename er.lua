@@ -207,12 +207,12 @@ NoclipButton.MouseLeave:Connect(function()
     NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
 end)
 
--- Function to set CanCollide for all parts of the character
+-- Function to safely toggle CanCollide for all parts
 local function toggleNoclip(state)
-    if player.Character then
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then -- Ensure character exists
         for _, part in pairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") and part.CanCollide ~= not state then
-                part.CanCollide = not state
+            if part:IsA("BasePart") then
+                part.CanCollide = not state -- Noclip ON: false, OFF: true
             end
         end
     end
@@ -244,7 +244,6 @@ NoclipButton.MouseButton1Click:Connect(function()
         toggleNoclip(false)
     end
 end)
-
 
 
 
