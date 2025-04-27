@@ -151,6 +151,12 @@ end, UDim2.new(0.1, 0, 0.76, 0))
 -- Other Tab for Additional Features
 local OtherTab = CreateTab("Other")
 
+CreateButton(OtherTab, "TP to End", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/hbjrev/tpend.github.io/refs/heads/main/ringta.lua"))()
+end, UDim2.new(0.1, 0, -0.1, 0))
+
+
+
 CreateButton(OtherTab, "TP to Bank", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ringtaa/Tptobank.github.io/refs/heads/main/Banktp.lua"))()
 end, UDim2.new(0.1, 0, 0.2, 0))
