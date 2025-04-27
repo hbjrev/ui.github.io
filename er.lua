@@ -189,6 +189,54 @@ GunKillAuraButton.MouseButton1Click:Connect(function()
 end)
 
 
+-- Noclip Toggle in Other Tab
+local noclipActive = false -- Keeps track of whether noclip is ON
+local noclipConnection -- Stores the connection for the Stepped event
+
+-- Noclip Button
+local NoclipButton = Instance.new("TextButton", OtherTab)
+NoclipButton.Text, NoclipButton.Size, NoclipButton.Position = "Noclip: OFF", UDim2.new(0.8, 0, 0.12, 0), UDim2.new(0.1, 0, 0.48, 0)
+NoclipButton.BackgroundColor3, NoclipButton.TextColor3 = Color3.fromRGB(30, 30, 30), Theme.Text -- Default OFF color
+Instance.new("UICorner", NoclipButton).CornerRadius = UDim.new(0, 6)
+
+-- Button Hover Effects
+NoclipButton.MouseEnter:Connect(function()
+    NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(40, 40, 40)
+end)
+NoclipButton.MouseLeave:Connect(function()
+    NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
+end)
+
+-- Toggle Functionality
+NoclipButton.MouseButton1Click:Connect(function()
+    noclipActive = not noclipActive -- Toggle the active state
+
+    if noclipActive then
+        NoclipButton.Text = "Noclip: ON"
+        NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
+        -- Activate noclip functionality
+        noclipConnection = RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    else
+        NoclipButton.Text = "Noclip: OFF"
+        NoclipButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
+        -- Deactivate noclip functionality
+        if noclipConnection then
+            noclipConnection:Disconnect()
+            noclipConnection = nil
+        end
+    end
+end)
+
+
+
 
 -- Towns Tab for Town Teleports
 local TownsTab = CreateTab("Towns")
