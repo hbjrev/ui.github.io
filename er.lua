@@ -16,6 +16,45 @@ MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BackgroundColor3 = Theme.Background
 
+-- Draggable GUI for PC and Mobile
+local dragToggle = false
+local dragStart = nil
+local startPos = nil
+local dragInput = nil
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+MainFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = false
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragToggle and input == dragInput then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+
 -- Rainbow Outline for Main Frame
 local frameOutline = Instance.new("UIStroke")
 frameOutline.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -196,23 +235,27 @@ local isMinimized = false
 
 -- Minimize Functionality
 MinimizeButton.MouseButton1Click:Connect(function()
-    isMinimized = true
-    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0.5, 0, -0.7, 0),
-        Size = UDim2.new(0, 250, 0, 50)
-    }):Play()
-    wait(0.3)
-    MainFrame.Visible = false
-    ReopenButton.Visible = true
+    if not isMinimized then -- Only minimize if not already minimized
+        isMinimized = true
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.5, 0, -0.7, 0),
+            Size = UDim2.new(0, 250, 0, 50)
+        }):Play()
+        wait(0.3)
+        MainFrame.Visible = false
+        ReopenButton.Visible = true
+    end
 end)
 
 -- Reopen Functionality
 ReopenButton.MouseButton1Click:Connect(function()
-    isMinimized = false
-    ReopenButton.Visible = false
-    MainFrame.Visible = true
-    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        Size = UDim2.new(0, 350, 0, 230)
-    }):Play()
+    if isMinimized then -- Only reopen if currently minimized
+        isMinimized = false
+        ReopenButton.Visible = false
+        MainFrame.Visible = true
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.new(0, 350, 0, 230)
+        }):Play()
+    end
 end)
