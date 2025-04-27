@@ -247,6 +247,56 @@ NoclipOffButton.MouseButton1Click:Connect(function()
 end)
 
 
+-- Anti-Void Button
+local antiVoidActive = false -- Keeps track of whether Anti-Void is active
+local antiVoidConnection -- Stores the connection for the loop
+
+local AntiVoidButton = Instance.new("TextButton", OtherTab)
+AntiVoidButton.Text, AntiVoidButton.Size, AntiVoidButton.Position = "Anti-Void: OFF", UDim2.new(0.8, 0, 0.12, 0), UDim2.new(0.1, 0, 0.76, 0)
+AntiVoidButton.BackgroundColor3, AntiVoidButton.TextColor3 = Color3.fromRGB(30, 30, 30), Theme.Text
+Instance.new("UICorner", AntiVoidButton).CornerRadius = UDim.new(0, 6)
+
+-- Button Hover Effects
+AntiVoidButton.MouseEnter:Connect(function()
+    AntiVoidButton.BackgroundColor3 = antiVoidActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(40, 40, 40)
+end)
+AntiVoidButton.MouseLeave:Connect(function()
+    AntiVoidButton.BackgroundColor3 = antiVoidActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
+end)
+
+-- Anti-Void Logic
+local function startAntiVoid()
+    antiVoidConnection = game:GetService("RunService").Stepped:Connect(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.Character.HumanoidRootPart
+            if rootPart.Position.Y < -1 then -- Check if the player is below y = -1
+                loadstring(game:HttpGet('https://raw.githubusercontent.com/ringtaa/train.github.io/refs/heads/main/train.lua'))() -- Teleport to train
+            end
+        end
+    end)
+end
+
+local function stopAntiVoid()
+    if antiVoidConnection then
+        antiVoidConnection:Disconnect() -- Stop monitoring position
+        antiVoidConnection = nil
+    end
+end
+
+-- Button Functionality
+AntiVoidButton.MouseButton1Click:Connect(function()
+    antiVoidActive = not antiVoidActive -- Toggle the active state
+
+    if antiVoidActive then
+        AntiVoidButton.Text = "Anti-Void: ON"
+        AntiVoidButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
+        startAntiVoid() -- Start monitoring position
+    else
+        AntiVoidButton.Text = "Anti-Void: OFF"
+        AntiVoidButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
+        stopAntiVoid() -- Stop monitoring position
+    end
+end)
 
 
 
