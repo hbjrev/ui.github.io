@@ -153,7 +153,7 @@ local OtherTab = CreateTab("Other")
 
 CreateButton(OtherTab, "TP to End", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/hbjrev/tpend.github.io/refs/heads/main/ringta.lua"))()
-end, UDim2.new(0.1, 0, 0.1, 0))
+end, UDim2.new(0.1, 0, 0.06, 0))
 
 
 
