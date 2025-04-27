@@ -201,19 +201,28 @@ NoclipOffButton.Text, NoclipOffButton.Size, NoclipOffButton.Position = "Noclip: 
 NoclipOffButton.BackgroundColor3, NoclipOffButton.TextColor3 = Color3.fromRGB(30, 30, 30), Theme.Text
 Instance.new("UICorner", NoclipOffButton).CornerRadius = UDim.new(0, 6)
 
+local noclipConnection -- To store the active loop for noclip
+
 -- Function to enable noclip
 local function enableNoclip()
-    if player.Character then
-        for _, part in pairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false -- Disable collisions
+    if noclipConnection then return end -- Prevent multiple connections
+    noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false -- Disable collisions
+                end
             end
         end
-    end
+    end)
 end
 
 -- Function to disable noclip
 local function disableNoclip()
+    if noclipConnection then
+        noclipConnection:Disconnect() -- Stop the loop
+        noclipConnection = nil
+    end
     if player.Character then
         for _, part in pairs(player.Character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -227,15 +236,16 @@ end
 NoclipOnButton.MouseButton1Click:Connect(function()
     enableNoclip()
     NoclipOnButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for visual feedback
-    NoclipOffButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for inactive button
+    NoclipOffButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Reset OFF button color
 end)
 
 -- Button Functionality for Noclip OFF
 NoclipOffButton.MouseButton1Click:Connect(function()
     disableNoclip()
-    NoclipOnButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for inactive button
+    NoclipOnButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Reset ON button color
     NoclipOffButton.BackgroundColor3 = Color3.fromRGB(205, 50, 50) -- Red for visual feedback
 end)
+
 
 
 
