@@ -116,6 +116,41 @@ CreateButton(OtherTab, "TP to Bank", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ringtaa/Tptobank.github.io/refs/heads/main/Banktp.lua"))()
 end, UDim2.new(0.1, 0, 0.2, 0))
 
+
+-- Gun Kill Aura Toggle with Shading
+local gunKillAuraActive = false -- Keeps track of the current state
+
+-- Gun Kill Aura Button
+local GunKillAuraButton = Instance.new("TextButton", OtherTab)
+GunKillAuraButton.Text, GunKillAuraButton.Size, GunKillAuraButton.Position = "Gun Aura (Kill Mobs): OFF", UDim2.new(0.8, 0, 0.12, 0), UDim2.new(0.1, 0, 0.34, 0)
+GunKillAuraButton.BackgroundColor3, GunKillAuraButton.TextColor3 = Color3.fromRGB(30, 30, 30), Theme.Text -- Default OFF color
+Instance.new("UICorner", GunKillAuraButton).CornerRadius = UDim.new(0, 6)
+
+-- Button Hover Effects
+GunKillAuraButton.MouseEnter:Connect(function()
+    GunKillAuraButton.BackgroundColor3 = gunKillAuraActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(40, 40, 40)
+end)
+GunKillAuraButton.MouseLeave:Connect(function()
+    GunKillAuraButton.BackgroundColor3 = gunKillAuraActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
+end)
+
+-- Toggle Functionality
+GunKillAuraButton.MouseButton1Click:Connect(function()
+    gunKillAuraActive = not gunKillAuraActive -- Toggle the active state
+
+    if gunKillAuraActive then
+        GunKillAuraButton.Text = "Gun Aura (Kill Mobs): ON"
+        GunKillAuraButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ringtaa/Aimbot.github.io/refs/heads/main/Kill.lua"))()
+    else
+        GunKillAuraButton.Text = "Gun Aura (Kill Mobs): OFF"
+        GunKillAuraButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
+        -- Add logic to disable "Gun Kill Aura" if needed
+    end
+end)
+
+
+
 -- Towns Tab for Town Teleports
 local TownsTab = CreateTab("Towns")
 
