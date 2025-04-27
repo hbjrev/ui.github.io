@@ -191,7 +191,6 @@ end)
 
 -- Noclip Toggle in Other Tab
 local noclipActive = false -- Keeps track of whether noclip is ON
-local noclipConnection -- Stores the connection for the Stepped event
 
 -- Noclip Button
 local NoclipButton = Instance.new("TextButton", OtherTab)
@@ -207,8 +206,8 @@ NoclipButton.MouseLeave:Connect(function()
     NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
 end)
 
--- Function to Apply/Remove Noclip
-local function applyNoclip(state)
+-- Function to toggle noclip
+local function toggleNoclip(state)
     if player.Character then
         for _, part in pairs(player.Character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -218,30 +217,18 @@ local function applyNoclip(state)
     end
 end
 
--- Toggle Functionality
+-- Button Functionality
 NoclipButton.MouseButton1Click:Connect(function()
     noclipActive = not noclipActive -- Toggle the active state
 
     if noclipActive then
         NoclipButton.Text = "Noclip: ON"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
-
-        -- Activate Noclip
-        noclipConnection = RunService.Stepped:Connect(function()
-            applyNoclip(true)
-        end)
+        toggleNoclip(true) -- Enable noclip
     else
         NoclipButton.Text = "Noclip: OFF"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
-
-        -- Deactivate Noclip
-        if noclipConnection then
-            noclipConnection:Disconnect()
-            noclipConnection = nil
-        end
-
-        -- Reset CanCollide to default (collision enabled)
-        applyNoclip(false)
+        toggleNoclip(false) -- Disable noclip
     end
 end)
 
