@@ -195,7 +195,7 @@ local noclipConnection -- Stores the connection for the Stepped event
 
 -- Noclip Button
 local NoclipButton = Instance.new("TextButton", OtherTab)
-NoclipButton.Text, NoclipButton.Size, NoclipButton.Position = "Noclip: OFF", UDim2.new(0.8, 0, 0.12, 0), UDim2.new(0.1, 0, 0.48, 0)
+NoclipButton.Text, NoclipButton.Size, NoclipButton.Position = "Noclip: OFF", UDim2.new(0.8, 0, 0.12, 0), UDim2.new(0.1, 0, 0.62, 0)
 NoclipButton.BackgroundColor3, NoclipButton.TextColor3 = Color3.fromRGB(30, 30, 30), Theme.Text -- Default OFF color
 Instance.new("UICorner", NoclipButton).CornerRadius = UDim.new(0, 6)
 
@@ -207,12 +207,12 @@ NoclipButton.MouseLeave:Connect(function()
     NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
 end)
 
--- Function to safely toggle CanCollide for all parts
-local function toggleNoclip(state)
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then -- Ensure character exists
+-- Function to Apply/Remove Noclip
+local function applyNoclip(state)
+    if player.Character then
         for _, part in pairs(player.Character:GetDescendants()) do
             if part:IsA("BasePart") then
-                part.CanCollide = not state -- Noclip ON: false, OFF: true
+                part.CanCollide = not state -- If ON: CanCollide = false; If OFF: CanCollide = true
             end
         end
     end
@@ -226,22 +226,22 @@ NoclipButton.MouseButton1Click:Connect(function()
         NoclipButton.Text = "Noclip: ON"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
 
-        -- Activate noclip functionality
+        -- Activate Noclip
         noclipConnection = RunService.Stepped:Connect(function()
-            toggleNoclip(true)
+            applyNoclip(true)
         end)
     else
         NoclipButton.Text = "Noclip: OFF"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
 
-        -- Deactivate noclip functionality
+        -- Deactivate Noclip
         if noclipConnection then
             noclipConnection:Disconnect()
             noclipConnection = nil
         end
 
-        -- Reset CanCollide to default
-        toggleNoclip(false)
+        -- Reset CanCollide to default (collision enabled)
+        applyNoclip(false)
     end
 end)
 
