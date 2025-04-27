@@ -207,6 +207,17 @@ NoclipButton.MouseLeave:Connect(function()
     NoclipButton.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30, 30, 30)
 end)
 
+-- Function to set CanCollide for all parts of the character
+local function toggleNoclip(state)
+    if player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") and part.CanCollide ~= not state then
+                part.CanCollide = not state
+            end
+        end
+    end
+end
+
 -- Toggle Functionality
 NoclipButton.MouseButton1Click:Connect(function()
     noclipActive = not noclipActive -- Toggle the active state
@@ -214,26 +225,26 @@ NoclipButton.MouseButton1Click:Connect(function()
     if noclipActive then
         NoclipButton.Text = "Noclip: ON"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- Green for ON state
+
         -- Activate noclip functionality
         noclipConnection = RunService.Stepped:Connect(function()
-            if player.Character then
-                for _, part in pairs(player.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
+            toggleNoclip(true)
         end)
     else
         NoclipButton.Text = "Noclip: OFF"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Gray for OFF state
+
         -- Deactivate noclip functionality
         if noclipConnection then
             noclipConnection:Disconnect()
             noclipConnection = nil
         end
+
+        -- Reset CanCollide to default
+        toggleNoclip(false)
     end
 end)
+
 
 
 
